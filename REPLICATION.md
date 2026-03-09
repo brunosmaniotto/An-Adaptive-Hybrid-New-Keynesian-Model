@@ -74,8 +74,8 @@ This replication package contains all code necessary to reproduce the figures, t
 ### Step 1: Clone or Download the Repository
 
 ```bash
-git clone https://github.com/brunosmaniotto/MABNK.git
-cd MABNK
+git clone https://github.com/brunosmaniotto/An-Adaptive-Hybrid-New-Keynesian-Model.git
+cd An-Adaptive-Hybrid-New-Keynesian-Model
 ```
 
 ### Step 2: Create a Virtual Environment (Recommended)
