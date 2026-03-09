@@ -45,7 +45,7 @@ Thumbs.db
 # Compiled manuscripts
 manuscript/**/*.pdf
 !manuscript/paper.pdf
-!manuscript/Online_Appendix/online_appendix_simulation_results.pdf
+!manuscript/Online_Appendix/online_appendix.pdf
 
 # Generated output (reproducible from code)
 output/
