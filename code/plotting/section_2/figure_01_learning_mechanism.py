@@ -73,12 +73,12 @@ def plot_learning_mechanism(data: dict) -> plt.Figure:
                loc='upper center', bbox_to_anchor=(0.5, 1.15), ncol=4, fontsize=9)
 
     # Annotations
-    ax1.annotate('Stable: CB rule\nforecasts well', xy=(7, 2.3), fontsize=9, ha='center',
-                 bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
+    ax1.annotate('Stable: CB rule\nforecasts well', xy=(7, 3.5), fontsize=9, ha='center',
+                 bbox=dict(boxstyle='round', facecolor='#e0e0e0', edgecolor='#aaaaaa', alpha=0.8))
     ax1.annotate('Persistent deviation:\nBL rule wins', xy=(27, 5.3), fontsize=9, ha='center',
                  bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
     ax1.annotate('Return to target:\nCredibility rebuilds', xy=(50, 5.3), fontsize=9, ha='center',
-                 bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
+                 bbox=dict(boxstyle='round', facecolor='#e0e0e0', edgecolor='#aaaaaa', alpha=0.8))
 
     plt.tight_layout()
     plt.subplots_adjust(top=0.85)
