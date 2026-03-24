@@ -1,0 +1,63 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+.eggs/
+dist/
+build/
+.pytest_cache/
+
+# Virtual environments
+.env
+.venv/
+env/
+venv/
+
+# IDE / Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# LaTeX build artifacts
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.toc
+*.lof
+*.lot
+*.nav
+*.snm
+*.vrb
+
+# Compiled manuscripts
+manuscript/**/*.pdf
+!manuscript/MABNK.pdf
+!manuscript/Online_Appendix/online_appendix_simulation_results.pdf
+
+# Generated output (reproducible from code)
+output/
+
+# Raw data (downloaded by code via FRED API)
+data/
+
+# Simulation caches
+*.pkl
+
+# API keys and credentials
+config.json
+*.key
+credentials.json
+

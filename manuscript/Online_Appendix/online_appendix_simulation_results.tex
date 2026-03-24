@@ -1,0 +1,834 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath, amssymb}
+\usepackage[round,authoryear]{natbib}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{mathptmx}
+\usepackage[T1]{fontenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{setspace}
+\setstretch{1.15}
+\usepackage{threeparttable}
+\captionsetup{labelfont=bf, textfont=it}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    citecolor=blue,
+    urlcolor=blue
+}
+
+\title{Online Appendix: Simulation Results\\[0.5em]
+\large An Adaptive-Hybrid New-Keynesian Model}
+\author{Bruno Cittolin Smaniotto}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This online appendix documents the numerical results underlying the claims in ``An Adaptive-Hybrid New-Keynesian Model.'' Each table presents simulation outputs with corresponding parameter configurations and references to the generating code. All results can be replicated using the code available in the replication package.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}
+
+This document serves as a comprehensive reference for the numerical claims made in the main text. For each simulation result, we report:
+\begin{itemize}
+    \item The specific numerical values cited in the manuscript
+    \item The parameter configuration used to generate them
+    \item The code file that produces the result
+\end{itemize}
+
+All simulations use the baseline calibration from Table 1 of the main text unless otherwise noted. The complete replication package, including all code and data, is available at \url{https://github.com/brunosmaniotto/MABNK}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Baseline Calibration}
+\label{sec:calibration}
+
+Table~\ref{tab:baseline_params} presents the baseline parameter values used throughout the simulations. These are defined in \texttt{code/models/parameters.py}.
+
+\begin{table}[htbp]
+\centering
+\caption{Baseline Parameter Values}
+\label{tab:baseline_params}
+\begin{threeparttable}
+\begin{tabular}{llcl}
+\toprule
+Parameter & Description & Value & Source \\
+\midrule
+\multicolumn{4}{l}{\textit{Structural Parameters}} \\
+$\beta$ & Discount factor & 0.99 & Gal\'i (2015) \\
+$\sigma$ & Intertemporal elasticity of substitution & 1.0 & Log utility \\
+$\kappa$ & Phillips curve slope & 0.024 & Gal\'i \& Gertler (1999) \\
+$\phi_\pi$ & Taylor rule: inflation response & 1.5 & Taylor (1993) \\
+$\phi_y$ & Taylor rule: output response & 0.125 & Taylor (1993) \\
+$\pi^*$ & Inflation target (quarterly) & 0.005 & 2\% annual \\
+$\rho_u$ & Cost-push shock persistence & 0.5 & -- \\
+$\rho_r$ & Natural rate persistence & 0.9 & -- \\
+\midrule
+\multicolumn{4}{l}{\textit{Behavioral Parameters}} \\
+$\lambda$ & Fraction of FIRE agents & 0.35 & Coibion \& Gorodnichenko (2015) \\
+$\eta$ & Learning speed & 0.10 & Malmendier \& Nagel (2016) \\
+$k$ & Memory window (quarters) & 3 & -- \\
+$\varepsilon$ & Simplicity bias threshold & $10^{-4}$ & Appendix B \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Code reference:} \texttt{code/models/parameters.py}
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Section 2: The Model}
+\label{sec:model_results}
+
+\subsection{Figure 1: Learning Mechanism}
+
+The learning mechanism illustration uses a stylized simulation with the following configuration:
+
+\begin{table}[htbp]
+\centering
+\caption{Figure 1 Simulation Parameters and Results}
+\label{tab:fig1_results}
+\begin{threeparttable}
+\begin{tabular}{lcc}
+\toprule
+Quantity & Value & Manuscript Reference \\
+\midrule
+Learning rate $\eta$ & 0.10 & Figure~1 caption \\
+Initial credibility $\theta_0$ & 1.0 & -- \\
+Credibility during stable periods & $\approx 0.95$ & Section~2.1, Figure~1 discussion \\
+Credibility after persistent shock (Q35) & $\approx 0.40$ & Section~2.1, Figure~1 discussion \\
+Credibility after 25Q recovery & $\approx 0.70$ & Section~2.1, Figure~1 discussion \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Code reference:} \texttt{code/simulations/section\_2/learning\_mechanism.py}, \texttt{code/plotting/section\_2/figure\_01\_learning\_mechanism.py}
+\item \textit{Output:} \texttt{output/figures/section\_2/figure\_01\_learning\_mechanism.png}
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\subsection{Figure 2: Roles of $k$ and $\varepsilon$}
+
+Panel (a) demonstrates the re-anchoring problem when $\varepsilon = 0$. Panel (b) compares memory window lengths.
+
+\begin{table}[htbp]
+\centering
+\caption{Figure 2 Results: Memory Window Comparison}
+\label{tab:fig2_results}
+\begin{threeparttable}
+\begin{tabular}{lccc}
+\toprule
+Configuration & De-anchoring Trigger & Recovery Possible & Notes \\
+\midrule
+\multicolumn{4}{l}{\textit{Panel (a): Simplicity Bias}} \\
+$\varepsilon = 0$ & Single-quarter spike & No & Credibility stuck at 0 \\
+$\varepsilon = 10^{-4}$ & Persistent deviation & Yes & Gradual recovery \\
+\midrule
+\multicolumn{4}{l}{\textit{Panel (b): Memory Window}} \\
+$k = 1$ & 2-quarter spike & Immediate & High volatility \\
+$k = 3$ & 12-quarter deviation & Delayed & More stable \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Code reference:} \texttt{code/simulations/section\_2/k\_epsilon\_roles.py}, \texttt{code/plotting/section\_2/figure\_02\_k\_epsilon\_roles.py}
+\item \textit{Output:} \texttt{output/figures/section\_2/figure\_02\_k\_epsilon\_roles.png}
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\subsection{Figure 3: Effect of Rational Agent Fraction}
+
+Simulations compare $\lambda \in \{0, 0.3, 1.0\}$ under single and repeated shocks.
+
+\begin{table}[htbp]
+\centering
+\caption{Figure 3 Simulation Configuration}
+\label{tab:fig3_config}
+\begin{threeparttable}
+\begin{tabular}{lcc}
+\toprule
+Parameter & Single Shock & Repeated Shocks \\
+\midrule
+Shock magnitude & 0.5\% & 0.75\% \\
+Shock persistence $\rho$ & 0.8 & -- \\
+Shock duration & -- & 12 quarters \\
+$\lambda$ values & \multicolumn{2}{c}{$\{0, 0.3, 1.0\}$} \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Key finding:} Mixed population ($\lambda = 0.3$) produces highest peak inflation.
+\item \textit{Code reference:} \texttt{code/simulations/section\_2/lambda\_comparison.py}, \texttt{code/plotting/section\_2/figure\_03\_lambda\_comparison.py}
+\item \textit{Output:} \texttt{output/figures/section\_2/figure\_03\_lambda\_comparison.png}
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\subsection{Table 2: Transitory vs.\ Persistent Shocks}
+
+This table demonstrates that shock persistence, not magnitude, triggers de-anchoring.
+
+\begin{table}[htbp]
+\centering
+\caption{Transitory vs.\ Persistent Shocks: Simulation Results}
+\label{tab:transitory_persistent}
+\begin{threeparttable}
+\begin{tabular}{ccccc}
+\toprule
+Persistence ($\rho$) & Peak $\pi$ (FIRE) & Peak $\pi$ (Adaptive) & Difference & Min $\theta$ \\
+\midrule
+0.0 & 4.33\% & 4.36\% & 0.03\% & 1.00 \\
+0.4 & 7.00\% & 4.27\% & $-$2.73\% & 1.00 \\
+0.85 & 22.78\% & 3.76\% & $-$19.02\% & 0.59 \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Configuration:} 4.5\% annualized shock, baseline parameters ($\eta = 0.10$, $\phi_\pi = 1.5$, $k = 3$, $\varepsilon = 10^{-4}$)
+\item \textit{Code reference:} \texttt{code/tables/section\_2/table\_02\_transitory\_persistent.py}
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\subsection{Table 3: The Paradox of Faster Learning}
+
+Faster learning ($\eta$) leads to worse inflation outcomes under persistent shocks.
+
+\begin{table}[htbp]
+\centering
+\caption{The Paradox of Faster Learning: Simulation Results}
+\label{tab:paradox_learning}
+\begin{threeparttable}
+\begin{tabular}{ccccc}
+\toprule
+Learning Speed ($\eta$) & Peak $\Delta\pi$ & Min $\theta$ & Quarters to Target & Final $\theta$ \\
+\midrule
+0.10 & 6.68\% & 0.122 & 28 & 1.000 \\
+0.20 & 8.35\% & 0.000 & 96 & 0.995 \\
+0.30 & 14.75\% & 0.000 & $>$115 & 0.000 \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Configuration:} 8\% annualized persistent shock ($\rho = 0.85$), baseline parameters ($\phi_\pi = 1.5$, $k = 3$, $\varepsilon = 10^{-4}$)
+\item \textit{Code reference:} \texttt{code/tables/section\_2/table\_03\_paradox\_learning.py}
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\subsection{Figure 4: Shock Regimes}
+
+Three distinct shock environments are simulated to illustrate regime-dependent dynamics.
+
+\begin{table}[htbp]
+\centering
+\caption{Figure 4: Shock Regime Configurations and Results}
+\label{tab:shock_regimes}
+\begin{threeparttable}
+\begin{tabular}{lccc}
+\toprule
+Regime & Shock $\sigma_u$ & Key Result & $\theta$ Dynamics \\
+\midrule
+Great Moderation & 0.0006 & Inflation stable near 2\% & $\theta$ fluctuates around 0.5 \\
+1970s-Style & Large, volatile & Peaks near 10\% & $\theta$ erodes from 0.9 \\
+Credibility Cycle & Variable & Full cycle & Recovery $\approx$ 15 years \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Code reference:} \texttt{code/simulations/section\_2/shock\_regimes.py}, \texttt{code/plotting/section\_2/figure\_04\_shock\_regimes.py}
+\item \textit{Output:} \texttt{output/figures/section\_2/figure\_04\_shock\_regimes.png}
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Section 2: Empirical Evidence on Persistence}
+\label{sec:persistence}
+
+\subsection{Figure 5: Time-Varying Inflation Persistence}
+
+Rolling 40-quarter AR(1) regressions on U.S.\ CPI inflation (1960Q1--2024Q4).
+
+\begin{table}[htbp]
+\centering
+\caption{Inflation Persistence by Monetary Policy Regime (corresponds to Table 4 in main text)}
+\label{tab:persistence_regimes}
+\begin{threeparttable}
+\begin{tabular}{lcccccc}
+\toprule
+Regime & Period & Mean $\hat{\rho}$ & Std.\ Dev. & $N$ & $F$-stat & $p$-value \\
+\midrule
+Great Inflation & 1968--1979 & 0.729 & 0.042 & 22 & 13.13 & $<$0.001 \\
+Volcker Era & 1980--1984 & 0.671 & 0.080 & 20 & 23.77 & $<$0.001 \\
+Great Moderation & 1985--2007 & 0.255 & 0.319 & 92 & 33.55 & $<$0.001 \\
+Post-Crisis & 2008--2019 & $-$0.045 & 0.105 & 48 & 1.93 & 0.147 \\
+COVID Era & 2020--2024 & 0.392 & 0.221 & 20 & -- & -- \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Method:} Rolling AR(1) with 40-quarter window; Chow tests for structural breaks
+\item \textit{Data:} FRED CPI series (CPIAUCSL)
+\item \textit{Code reference:} \texttt{code/empirical/section\_2/persistence\_analysis.py}, \texttt{code/plotting/section\_2/figure\_05\_persistence.py}
+\item \textit{Output:} \texttt{output/figures/section\_2/figure\_05\_persistence.png}, \texttt{output/empirical/section\_2/persistence\_estimates.csv}
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Section 3: Applications and Policy Implications}
+\label{sec:applications}
+
+\subsection{Figure 6: Oil Shocks and Initial Credibility}
+
+Identical shocks produce dramatically different outcomes depending on initial credibility.
+
+\begin{table}[htbp]
+\centering
+\caption{Figure 6: Oil Shocks Simulation Results}
+\label{tab:oil_shocks}
+\begin{threeparttable}
+\begin{tabular}{lcc}
+\toprule
+Quantity & Low $\theta_0$ (0.2) & High $\theta_0$ (1.0) \\
+\midrule
+Shock magnitude & \multicolumn{2}{c}{100 bp cost-push} \\
+Policy rule & \multicolumn{2}{c}{$\phi_\pi = 1.5$} \\
+\midrule
+Peak inflation & 8.2\% & 5.5\% \\
+Peak difference & \multicolumn{2}{c}{2.7 pp} \\
+Quarters above 3\% & 12 & 4 \\
+Persistence ratio & \multicolumn{2}{c}{$3.0\times$} \\
+Final credibility & 0.11 & 1.00 \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Code reference:} \texttt{code/simulations/section\_3/oil\_shocks.py}, \texttt{code/plotting/section\_3/figure\_06\_oil\_shocks.py}
+\item \textit{Output:} \texttt{output/figures/section\_3/figure\_06\_oil\_shocks.png}
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\subsection{Figure 7: The Great Moderation}
+
+High inherited credibility makes the adaptive model behave like standard NK.
+
+\begin{table}[htbp]
+\centering
+\caption{Figure 7: Great Moderation Simulation Results}
+\label{tab:great_moderation}
+\begin{threeparttable}
+\begin{tabular}{lc}
+\toprule
+Quantity & Value \\
+\midrule
+Initial credibility $\theta_0$ & 0.95 \\
+Shock volatility $\sigma$ & 0.0006 \\
+Shock persistence $\rho$ & 0.3 \\
+\midrule
+Correlation (Adaptive vs.\ NK) & 0.94 \\
+Maximum difference & $<$ 0.2 pp \\
+Credibility throughout & $\approx 1.0$ \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Code reference:} \texttt{code/simulations/section\_3/great\_moderation.py}, \texttt{code/plotting/section\_3/figure\_07\_great\_moderation.py}
+\item \textit{Output:} \texttt{output/figures/section\_3/figure\_07\_great\_moderation.png}
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\subsection{Figure 8: The Missing Disinflation}
+
+Anchored expectations absorb the demand collapse, preventing deflation.
+
+\begin{table}[htbp]
+\centering
+\caption{Figure 8: Missing Disinflation Simulation Results}
+\label{tab:missing_disinflation}
+\begin{threeparttable}
+\begin{tabular}{lcc}
+\toprule
+Quantity & Standard NK & Adaptive Model \\
+\midrule
+Initial credibility $\theta_0$ & -- & 0.95 \\
+Shock magnitude & \multicolumn{2}{c}{$-$50 bp} \\
+Shock persistence $\rho$ & \multicolumn{2}{c}{0.7} \\
+\midrule
+Minimum inflation & $-$3.7\% & $-$0.6\% \\
+Difference & \multicolumn{2}{c}{3.1 pp} \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Code reference:} \texttt{code/simulations/section\_3/missing\_disinflation.py}, \texttt{code/plotting/section\_3/figure\_08\_missing\_disinflation.py}
+\item \textit{Output:} \texttt{output/figures/section\_3/figure\_08\_missing\_disinflation.png}
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\subsection{Figure 9: Post-Pandemic Inflation}
+
+Two-phase dynamics: initial dampening followed by persistence as credibility erodes.
+
+\begin{table}[htbp]
+\centering
+\caption{Figure 9: Post-Pandemic Simulation Results}
+\label{tab:post_pandemic}
+\begin{threeparttable}
+\begin{tabular}{lcc}
+\toprule
+Quantity & Standard NK & Adaptive Model \\
+\midrule
+Initial credibility $\theta_0$ & -- & 0.6 \\
+Policy response $\phi_\pi$ & \multicolumn{2}{c}{1.1 (weak)} \\
+\midrule
+Peak inflation & 16.7\% & 7.8\% \\
+Return to target & 4.5 years & 8.0 years \\
+Crossover point & \multicolumn{2}{c}{3.5 years} \\
+Final credibility & -- & 0.10 \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Note:} Crossover marks when adaptive model costs exceed initial dampening benefits.
+\item \textit{Code reference:} \texttt{code/simulations/section\_3/post\_pandemic.py}, \texttt{code/plotting/section\_3/figure\_09\_post\_pandemic.py}
+\item \textit{Output:} \texttt{output/figures/section\_3/figure\_09\_post\_pandemic.png}
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\subsection{Figure 10: Long and Variable Lags}
+
+Transmission speed varies systematically with credibility state.
+
+\begin{table}[htbp]
+\centering
+\caption{Figure 10: Transmission Lags by Credibility}
+\label{tab:transmission_lags}
+\begin{threeparttable}
+\begin{tabular}{lccc}
+\toprule
+Initial $\theta_0$ & Peak Inflation & Quarters to Target & Relative Speed \\
+\midrule
+0.2 (Low) & 8.7\% & 14 & Baseline \\
+0.5 (Medium) & 7.5\% & 12 & 17\% faster \\
+0.8 (High) & 6.3\% & 10 & 40\% faster \\
+\midrule
+Shock & \multicolumn{3}{c}{0.75 pp cost-push, $\rho = 0.75$} \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Code reference:} \texttt{code/simulations/section\_3/transmission\_lags.py}, \texttt{code/plotting/section\_3/figure\_10\_transmission\_lags.py}
+\item \textit{Output:} \texttt{output/figures/section\_3/figure\_10\_transmission\_lags.png}
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\subsection{Figure 11: Phillips Curve Estimation}
+
+Simulated data reveal apparent parameter instability arising from credibility variation.
+
+\begin{table}[htbp]
+\centering
+\caption{Figure 11: Phillips Curve Estimates by Credibility Regime}
+\label{tab:pc_estimation}
+\begin{threeparttable}
+\begin{tabular}{lccc}
+\toprule
+Credibility Regime & AR(1) $\hat{\rho}$ & Standard $\hat{\kappa}$ & Hybrid $\hat{\kappa}$ \\
+\midrule
+Low ($\theta = 0.2$) & 0.97 & 0.062 & 0.016 \\
+Medium ($\theta = 0.5$) & 0.91 & 0.038 & 0.016 \\
+High ($\theta = 0.95$) & 0.79 & 0.026 & 0.016 \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Configuration:} 200 quarters, shocks $\sigma = 0.002$, $\rho = 0.3$
+\item \textit{Note:} Hybrid specification includes $\pi_{t-1}$; standard specification omits it.
+\item \textit{Code reference:} \texttt{code/simulations/section\_3/phillips\_curve.py}, \texttt{code/plotting/section\_3/figure\_11\_phillips\_curve.py}
+\item \textit{Output:} \texttt{output/figures/section\_3/figure\_11\_phillips\_curve.png}
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\subsection{Figure 12: State-Dependent Optimal Policy}
+
+Optimal policy aggressiveness varies inversely with credibility.
+
+\begin{table}[htbp]
+\centering
+\caption{Figure 12: Optimal Policy Coefficient by Initial Credibility}
+\label{tab:optimal_policy}
+\begin{threeparttable}
+\begin{tabular}{lcccc}
+\toprule
+Initial $\theta_0$ & Optimal $\phi_\pi^*$ & Relative Loss & Taylor Principle \\
+\midrule
+0.05 & $\approx 3.0$ & 3.6$\times$ baseline & Required \\
+0.35 & $\approx 2.0$ & 2.0$\times$ baseline & Required \\
+0.75 & $\approx 1.0$ & 1.2$\times$ baseline & Not required \\
+0.95 & $\approx 0.8$ & Baseline & Not required \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Method:} Grid search over $\phi_\pi \in [0.5, 5.0]$, 16-quarter simulations
+\item \textit{Note:} Softmax smoothing ($\gamma = 25{,}000$) used for differentiable welfare function.
+\item \textit{Code reference:} \texttt{code/simulations/section\_3/policy\_asymmetry.py}, \texttt{code/plotting/section\_3/figure\_12\_policy\_asymmetry.py}
+\item \textit{Output:} \texttt{output/figures/section\_3/figure\_12\_policy\_asymmetry.png}
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\subsection{Figure 13: The Credibility Buffer}
+
+High credibility permits delayed policy response; low credibility does not.
+
+\begin{table}[htbp]
+\centering
+\caption{Figure 13: Credibility Buffer Simulation Results}
+\label{tab:credibility_buffer}
+\begin{threeparttable}
+\begin{tabular}{lcccc}
+\toprule
+ & \multicolumn{2}{c}{High $\theta_0$ (0.95)} & \multicolumn{2}{c}{Low $\theta_0$ (0.50)} \\
+\cmidrule(lr){2-3} \cmidrule(lr){4-5}
+ & Immediate & Delayed & Immediate & Delayed \\
+\midrule
+Peak inflation & Similar & Similar & Moderate & High \\
+Welfare loss & $\approx$ Equal & $\approx$ Equal & Baseline & Elevated \\
+De-anchoring & No & No & Mild & Severe \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Configuration:} Delay period = 8 quarters (interest rate held at neutral)
+\item \textit{Code reference:} \texttt{code/simulations/section\_3/credibility\_buffer.py}, \texttt{code/plotting/section\_3/figure\_13\_credibility\_buffer.py}
+\item \textit{Output:} \texttt{output/figures/section\_3/figure\_13\_credibility\_buffer.png}
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Section 4: Extensions}
+\label{sec:extensions}
+
+\subsection{Figure 14: Hyperinflation and the Three-Arm Model}
+
+Uses baseline parameters ($\lambda = 0.35$, $\eta = 0.10$, $\kappa = 0.024$) with a single cost-push shock of $0.08$ at $t=5$ and persistence $\rho_u = 0.90$. The Taylor principle ($\phi_\pi > 1$ vs.\ $\phi_\pi \leq 1$) determines whether trend-following persists.
+
+\begin{table}[htbp]
+\centering
+\caption{Figure 14: Three-Arm Model Results}
+\label{tab:hyperinflation}
+\begin{threeparttable}
+\begin{tabular}{lcccc}
+\toprule
+Policy Stance & $\phi_\pi$ & Peak Inflation & Max TF Share & TF Persists \\
+\midrule
+Active & $1.5$ & 60.3\% & 0.19 & No \\
+Boundary & $1.0$ & 61.6\% & 0.19 & Yes \\
+Passive & $0.5$ & 62.9\% & 0.27 & Yes \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Key finding:} Under active policy ($\phi_\pi > 1$), trend-following activates transiently but returns to zero. Under passive policy ($\phi_\pi \leq 1$), trend-following persists and can generate explosive dynamics.
+\item \textit{Code reference:} \texttt{code/simulations/section\_4/hyperinflation.py}, \texttt{code/plotting/section\_4/figure\_14\_hyperinflation.py}
+\item \textit{Output:} \texttt{output/figures/section\_4/figure\_14\_hyperinflation.png}
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\subsection{Figure 15: Brazil---Counterfactual vs.\ Real Plan}
+
+The URV re-anchored expectations before currency reform.
+
+\begin{table}[htbp]
+\centering
+\caption{Figure 15: Brazil Simulation Results}
+\label{tab:brazil}
+\begin{threeparttable}
+\begin{tabular}{lcc}
+\toprule
+Quantity & Counterfactual & Real Plan \\
+\midrule
+Initial state & $\theta_{CB} = 0.05$, $\theta_{TF} = 0.80$ & Same + URV phase \\
+Shock & \multicolumn{2}{c}{2\% for 4 quarters} \\
+Policy & \multicolumn{2}{c}{$\phi_\pi = 1.5$} \\
+\midrule
+Peak inflation (annualized) & $>$2000\% & 18\% \\
+URV re-anchoring & -- & $\theta_{CB}$: 5\% $\to$ 41\% in 4Q \\
+Final credibility & $\theta_{CB} \to 0$ & $\theta_{CB} \to 1$ \\
+Welfare improvement & -- & $>$90\% \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Code reference:} \texttt{code/simulations/section\_4/brazil.py}, \texttt{code/plotting/section\_4/figure\_15\_brazil.py}
+\item \textit{Output:} \texttt{output/figures/section\_4/figure\_15\_brazil.png}
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\subsection{Figure 16: Long Memory and Inflation Trauma}
+
+Exponentially discounted memory ($\delta = 0.8$) captures lasting scars.
+
+\begin{table}[htbp]
+\centering
+\caption{Figure 16: Long Memory Simulation Results (20-Year Histories)}
+\label{tab:long_memory}
+\begin{threeparttable}
+\begin{tabular}{llcc}
+\toprule
+Scenario & Description & Final $\theta$ & Peak $\pi$ \\
+\midrule
+Stable & At 2\% target throughout & 1.00 & 8.2\% \\
+Distant trauma & 5y hyperinflation, then 15y stable & 0.47 & 12.1\% \\
+Chronic (current) & 10y stable, then 10y at 7.5\% & 0.02 & 23.3\% \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Key finding:} Even 15 years after hyperinflation, credibility only partially recovers ($\theta \approx 0.5$).
+\item \textit{Code reference:} \texttt{code/simulations/section\_4/long\_memory.py}, \texttt{code/plotting/section\_4/figure\_16\_long\_memory.py}
+\item \textit{Output:} \texttt{output/figures/section\_4/figure\_16\_long\_memory.png}
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\subsection{Figure 17: Japan---Anchored Below Target}
+
+Symmetric de-anchoring occurs when inflation persistently undershoots.
+
+\begin{table}[htbp]
+\centering
+\caption{Figure 17: Japan Simulation Results}
+\label{tab:japan}
+\begin{threeparttable}
+\begin{tabular}{lcc}
+\toprule
+Inflation Scenario & Deviation from 2\% Target & Final $\theta$ \\
+\midrule
+At target (2\%) & 0 pp & 1.00 \\
+Close (1\%) & $-$1.0 pp & High (within $\varepsilon$) \\
+Japan (0\%) & $-$2.0 pp & $\approx 0$ \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Key finding:} 2 pp persistent miss causes credibility collapse regardless of direction.
+\item \textit{Code reference:} \texttt{code/simulations/section\_4/japan.py}, \texttt{code/plotting/section\_4/figure\_17\_japan.py}
+\item \textit{Output:} \texttt{output/figures/section\_4/figure\_17\_japan.png}
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Appendix Results}
+\label{sec:appendix_results}
+
+\subsection{Figure B1: The Re-Anchoring Problem}
+
+Without the simplicity bias ($\varepsilon = 0$), credibility cannot recover.
+
+\begin{table}[htbp]
+\centering
+\caption{Figure B1: Re-Anchoring Problem Results}
+\label{tab:reanchoring}
+\begin{threeparttable}
+\begin{tabular}{lcc}
+\toprule
+Configuration & $\varepsilon = 0$ & $\varepsilon = 10^{-4}$ \\
+\midrule
+Shock & \multicolumn{2}{c}{2\%, $\rho = 0.8$} \\
+Learning rate & \multicolumn{2}{c}{$\eta = 0.10$} \\
+\midrule
+De-anchoring & Identical & Identical \\
+Recovery after stabilization & No & Yes \\
+Final $\theta$ (post-shock) & $\approx 0$ & Gradual recovery \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Code reference:} \texttt{code/simulations/appendix\_B/reanchoring.py}, \texttt{code/plotting/appendix\_B/figure\_B1\_reanchoring.py}
+\item \textit{Output:} \texttt{output/figures/appendix\_B/figure\_B1\_reanchoring.png}
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\subsection{Appendix D: Robustness---Kalman Filter Comparison}
+
+State-space estimation validates rolling-window persistence estimates.
+
+\begin{table}[htbp]
+\centering
+\caption{Table A1: Kalman TVP vs.\ Rolling Window Persistence}
+\label{tab:kalman_comparison}
+\begin{threeparttable}
+\begin{tabular}{lccc}
+\toprule
+Period & Kalman $\bar{\rho}$ & Rolling $\bar{\rho}$ & Difference \\
+\midrule
+Great Inflation (1968--1979) & 0.703 & 0.729 & $-$0.026 \\
+Volcker Era (1980--1984) & 0.490 & 0.671 & $-$0.181 \\
+Great Moderation (1985--2007) & 0.145 & 0.255 & $-$0.109 \\
+Post-Crisis (2008--2019) & 0.009 & $-$0.045 & $+$0.054 \\
+COVID Era (2020--2024) & 0.352 & 0.392 & $-$0.040 \\
+\midrule
+Correlation & \multicolumn{3}{c}{0.86} \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Kalman estimates:} $\hat{\sigma}^2_\varepsilon = 5.12$, $\hat{\sigma}^2_\omega = 0.0036$, signal-to-noise = 0.0007
+\item \textit{Code reference:} \texttt{code/empirical/appendix\_D/kalman\_comparison.py}
+\item \textit{Output:} \texttt{output/tables/appendix\_D/table\_D1.csv}
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\subsection{Appendix D: Window Size Sensitivity}
+
+Persistence estimates are stable across window sizes.
+
+\begin{table}[htbp]
+\centering
+\caption{Table A2: Rolling Persistence by Window Size}
+\label{tab:window_sensitivity}
+\begin{threeparttable}
+\begin{tabular}{lcccc}
+\toprule
+Window (quarters) & Mean $\hat{\rho}$ & Std.\ Dev. & Min & Max \\
+\midrule
+32 & 0.268 & 0.331 & $-$0.413 & 0.867 \\
+40 & 0.290 & 0.344 & $-$0.354 & 0.859 \\
+48 & 0.296 & 0.349 & $-$0.358 & 0.867 \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Code reference:} \texttt{code/empirical/appendix\_D/window\_sensitivity.py}
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\subsection{Appendix E: MAB vs.\ Bayesian Learning}
+
+Both microfoundations produce nearly identical aggregate dynamics.
+
+\begin{table}[htbp]
+\centering
+\caption{Figure E1: MAB vs.\ Bayesian Comparison}
+\label{tab:mab_bayesian}
+\begin{threeparttable}
+\begin{tabular}{lc}
+\toprule
+Metric & Value \\
+\midrule
+Correlation ($\theta_t$ vs.\ $\bar{w}_t$) & $>$0.87 \\
+RMSE (inflation paths) & $<$0.25 pp \\
+Asymmetry preserved & Yes (both frameworks) \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Code reference:} \texttt{code/simulations/appendix\_E/mab\_vs\_bayesian.py}, \texttt{code/plotting/appendix\_E/figure\_E1\_mab\_vs\_bayesian.py}
+\item \textit{Output:} \texttt{output/figures/appendix\_E/figure\_E1\_mab\_vs\_bayesian.png}
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Computational Details}
+\label{sec:computational}
+
+\subsection{Algorithm Parameters}
+
+The sophisticated FIRE solution algorithm uses the following configuration:
+
+\begin{table}[htbp]
+\centering
+\caption{Numerical Algorithm Parameters}
+\label{tab:algorithm_params}
+\begin{tabular}{llc}
+\toprule
+Parameter & Description & Value \\
+\midrule
+$\alpha$ & Dampening factor & 0.3 \\
+tol & Convergence tolerance & $10^{-8}$ \\
+max\_iter & Maximum iterations & 200 \\
+Typical convergence & Observed iterations & 40--100 \\
+Runtime & $T = 120$ quarters & $<$1 second \\
+\midrule
+$\gamma$ & Softmax inverse temperature & 25,000 \\
+Transition width & Softmax smoothing & $\pm$0.0002 \\
+Error vs.\ hard indicator & Softmax approximation & $<$0.1\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Summary of Key Numerical Results}
+\label{sec:summary}
+
+\begin{table}[htbp]
+\centering
+\caption{Summary: Key Numerical Claims in Manuscript}
+\label{tab:summary}
+\begin{threeparttable}
+\begin{tabular}{lll}
+\toprule
+Claim & Value & Code Reference \\
+\midrule
+\multicolumn{3}{l}{\textit{Section 2: Model}} \\
+Credibility recovery asymmetry & $\approx$15 years & \texttt{simulations/section\_2/shock\_regimes.py} \\
+Persistence triggers de-anchoring & $\rho = 0.85$ & \texttt{tables/section\_2/table\_02\_transitory\_persistent.py} \\
+\midrule
+\multicolumn{3}{l}{\textit{Section 3: Applications}} \\
+Oil shock peak difference & 2.7 pp & \texttt{simulations/section\_3/oil\_shocks.py} \\
+Oil shock persistence ratio & $3.0\times$ & \texttt{simulations/section\_3/oil\_shocks.py} \\
+Great Moderation correlation & 0.94 & \texttt{simulations/section\_3/great\_moderation.py} \\
+Missing disinflation: NK vs.\ Adaptive & $-3.7\%$ vs.\ $-0.6\%$ & \texttt{simulations/section\_3/missing\_disinflation.py} \\
+Post-pandemic: NK vs.\ Adaptive peak & 16.7\% vs.\ 7.8\% & \texttt{simulations/section\_3/post\_pandemic.py} \\
+Transmission lag difference & 40\% & \texttt{simulations/section\_3/transmission\_lags.py} \\
+Welfare loss ratio (low vs.\ high $\theta$) & $3.6\times$ & \texttt{simulations/section\_3/policy\_asymmetry.py} \\
+\midrule
+\multicolumn{3}{l}{\textit{Section 4: Extensions}} \\
+Brazil welfare improvement & $>$90\% & \texttt{simulations/section\_4/brazil.py} \\
+Kalman vs.\ rolling correlation & 0.86 & \texttt{empirical/appendix\_D/kalman\_comparison.py} \\
+MAB vs.\ Bayesian correlation ($	heta_t$ vs.\ $ar{w}_t$) & $>$0.87 & \texttt{simulations/appendix\_E/mab\_vs\_bayesian.py} \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item All code files located in \texttt{code/simulations/}, \texttt{code/plotting/}, \texttt{code/tables/}, or \texttt{code/empirical/}.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\end{document}
